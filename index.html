@@ -1417,6 +1417,7 @@ body.intro-active{ overflow: hidden; height: 100vh; }
         <div class="form__row">
           <label for="email">Email</label>
           <input type="email" id="email" name="email" autocomplete="email" required>
+      <input type="hidden" name="registration_number" id="registrationNumber">
         </div>
         <div class="form__row">
           <label for="company">Company / Project</label>
@@ -1720,6 +1721,14 @@ body.intro-active{ overflow: hidden; height: 100vh; }
 
     status.textContent = 'Transmitting your enquiry…';
     status.className = 'form__status';
+
+    var reference = createReference();
+
+    var registrationField = form.querySelector('#registrationNumber');
+
+    if (registrationField) {
+      registrationField.value = reference;
+    }
 
     var data = new FormData(form);
 
