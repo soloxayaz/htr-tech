@@ -1724,13 +1724,8 @@ body.intro-active{ overflow: hidden; height: 100vh; }
 
     var reference = createReference();
 
-    var registrationField = form.querySelector('#registrationNumber');
-
-    if (registrationField) {
-      registrationField.value = reference;
-    }
-
     var data = new FormData(form);
+    data.set('registration_number', reference);
 
     var name = data.get('name') || '';
     var email = data.get('email') || '';
