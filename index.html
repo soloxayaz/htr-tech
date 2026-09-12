@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTR TECH — Private Technology &amp; Digital Security Studio</title>
+<meta name="description" content="HTR TECH builds practical digital solutions across web development, technology and responsible cybersecurity.">
+<meta name="theme-color" content="#0A0A0A">
+<!-- Canonical URL: set this after choosing the final custom domain. -->
+
+<!-- Open Graph -->
+<meta property="og:title" content="HTR TECH — Private Technology &amp; Digital Security Studio">
+<meta property="og:description" content="Web development, digital systems and responsible cybersecurity for people and businesses building what comes next.">
+<meta property="og:type" content="website">
+<!-- OG URL/image intentionally omitted until the final public URL exists. -->
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- Favicon (inline, no external asset needed) -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230A0A0A'/%3E%3Cline x1='20' y1='72' x2='80' y2='28' stroke='%23F4F2ED' stroke-width='6'/%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ==========================================================================
+   HTR TECH — Design tokens
+   ========================================================================== */
+:root{
+  --ink: #0A0A0A;
+  --ink-soft: #1C1B18;
+  --paper: #F4F2ED;
+  --paper-dim: #EAE6DA;
+  --stone: #A5A29B;
+  --stone-dark: #6E6B63;
+  --champagne: #B7A276;
+
+  --serif: 'Cormorant Garamond', 'Iowan Old Style', Georgia, serif;
+  --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  --edge: clamp(24px, 5vw, 88px);
+  --rule: 1px solid rgba(10,10,10,0.14);
+  --rule-light: 1px solid rgba(244,242,237,0.18);
+
+  --dur-fast: .3s;
+  --dur-med: .6s;
+  --ease: cubic-bezier(.22,.61,.36,1);
+}
+
+/* ==========================================================================
+   Reset
+   ========================================================================== */
+*, *::before, *::after{ box-sizing: border-box; }
+html{ scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce){
+  html{ scroll-behavior: auto; }
+  *, *::before, *::after{ animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }
+}
+body{
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+h1,h2,h3,p,ol,ul,figure{ margin: 0; padding: 0; }
+ol,ul{ list-style: none; }
+a{ color: inherit; text-decoration: none; }
+img,svg{ display: block; max-width: 100%; }
+button{ font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+input, textarea{ font: inherit; color: inherit; }
+
+::selection{ background: var(--ink); color: var(--paper); }
+
+/* Scrollbar */
+::-webkit-scrollbar{ width: 10px; }
+::-webkit-scrollbar-track{ background: var(--paper); }
+::-webkit-scrollbar-thumb{ background: var(--stone); border: 2px solid var(--paper); border-radius: 0; }
+
+:focus-visible{
+  outline: 1px solid var(--ink);
+  outline-offset: 4px;
+}
+
+/* ==========================================================================
+   Utility type
+   ========================================================================== */
+.section-num{
+  font-family: var(--sans);
+  font-size: 12px;
+  letter-spacing: .12em;
+  color: var(--stone-dark);
+  display: block;
+  margin-bottom: 10px;
+}
+
+.section-head{
+  padding: 0 var(--edge);
+  margin-bottom: clamp(40px, 6vw, 80px);
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+}
+.section-head h2{
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(32px, 4.2vw, 52px);
+  letter-spacing: -0.01em;
+}
+
+section{
+  padding-block: clamp(64px, 10vw, 140px);
+  position: relative;
+}
+
+/* ==========================================================================
+   Intro sequence
+   ========================================================================== */
+.intro{
+  position: fixed;
+  inset: 0;
+  background: var(--ink);
+  color: var(--paper);
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  transition: opacity .7s var(--ease), visibility .7s var(--ease);
+}
+.intro.is-hidden{
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.intro__rule{
+  width: 0;
+  height: 1px;
+  background: var(--champagne);
+  transition: width 1s var(--ease);
+}
+.intro.is-drawn .intro__rule{ width: min(280px, 60vw); }
+
+.intro__wordmark{
+  font-family: var(--serif);
+  font-size: clamp(40px, 8vw, 84px);
+  letter-spacing: .04em;
+  display: flex;
+  gap: 16px;
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity .8s var(--ease) .2s, transform .8s var(--ease) .2s;
+}
+.intro.is-drawn .intro__wordmark{ opacity: 1; transform: none; }
+
+.intro__tagline{
+  font-family: var(--sans);
+  font-size: 12px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--stone);
+  opacity: 0;
+  transition: opacity .8s var(--ease) .55s;
+}
+.intro.is-drawn .intro__tagline{ opacity: 1; }
+
+body.intro-active{ overflow: hidden; height: 100vh; }
+
+/* ==========================================================================
+   Scroll progress
+   ========================================================================== */
+.progress{
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  width: 0%;
+  background: var(--ink);
+  z-index: 500;
+  transition: width .08s linear;
+}
+
+/* ==========================================================================
+   Navigation
+   ========================================================================== */
+.nav{
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 400;
+  padding: 22px var(--edge);
+  transition: background var(--dur-fast) var(--ease), padding var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+  border-bottom: 1px solid transparent;
+}
+.nav.is-scrolled{
+  background: rgba(244,242,237,0.92);
+  backdrop-filter: blur(10px);
+  padding-block: 16px;
+  border-bottom-color: rgba(10,10,10,0.1);
+}
+.nav__inner{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nav__mark{
+  font-family: var(--serif);
+  font-size: 19px;
+  letter-spacing: .06em;
+}
+.nav__links{
+  display: flex;
+  gap: 34px;
+}
+.nav__links a{
+  font-size: 13px;
+  letter-spacing: .04em;
+  position: relative;
+  padding-bottom: 3px;
+}
+.nav__links a::after{
+  content: '';
+  position: absolute;
+  left: 0; right: 100%;
+  bottom: 0;
+  height: 1px;
+  background: var(--ink);
+  transition: right var(--dur-fast) var(--ease);
+}
+.nav__links a:hover::after{ right: 0; }
+
+.nav__toggle{
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  width: 26px;
+}
+.nav__toggle span{
+  height: 1px;
+  width: 100%;
+  background: var(--ink);
+  transition: transform var(--dur-fast) var(--ease), opacity var(--dur-fast) var(--ease);
+}
+.nav__toggle[aria-expanded="true"] span:first-child{ transform: translateY(3.5px) rotate(45deg); }
+.nav__toggle[aria-expanded="true"] span:last-child{ transform: translateY(-3.5px) rotate(-45deg); }
+
+/* ==========================================================================
+   Mobile menu
+   ========================================================================== */
+.mobile-menu{
+  position: fixed;
+  inset: 0;
+  background: var(--ink);
+  color: var(--paper);
+  z-index: 350;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 100px var(--edge) 40px;
+  transform: translateY(-100%);
+  transition: transform .5s var(--ease);
+}
+.mobile-menu.is-open{ transform: translateY(0); }
+.mobile-menu nav{
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+.mobile-menu nav a{
+  font-family: var(--serif);
+  font-size: 34px;
+}
+.mobile-menu__footer{
+  font-size: 12px;
+  letter-spacing: .08em;
+  color: var(--stone);
+  text-transform: uppercase;
+}
+
+/* ==========================================================================
+   Hero
+   ========================================================================== */
+.hero{
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: 120px;
+}
+.hero__grid{
+  padding: 0 var(--edge);
+  max-width: 1000px;
+}
+.hero__label{
+  font-size: 12px;
+  letter-spacing: .1em;
+  color: var(--stone-dark);
+  margin-bottom: 28px;
+}
+.hero__title{
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(64px, 13vw, 168px);
+  line-height: .92;
+  letter-spacing: -0.01em;
+}
+.hero__title-line{
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(24px);
+  animation: rise .9s var(--ease) forwards;
+  animation-delay: .1s;
+}
+@keyframes rise{ to{ opacity: 1; transform: none; } }
+
+.hero__thesis{
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: clamp(20px, 2.6vw, 30px);
+  margin-top: 30px;
+  line-height: 1.3;
+}
+.hero__body{
+  max-width: 480px;
+  margin-top: 22px;
+  color: var(--stone-dark);
+  font-size: 16px;
+  line-height: 1.6;
+}
+.hero__actions{
+  display: flex;
+  gap: 18px;
+  margin-top: 44px;
+  flex-wrap: wrap;
+}
+
+.hero__meta{
+  padding: 0 var(--edge);
+  margin-top: clamp(60px, 10vw, 120px);
+  display: grid;
+  gap: 8px;
+  max-width: 460px;
+}
+.hero__meta-row{
+  display: flex;
+  justify-content: space-between;
+  padding-block: 8px;
+  border-bottom: var(--rule);
+  font-size: 13px;
+  letter-spacing: .03em;
+}
+.hero__meta-row span:last-child{ color: var(--stone-dark); }
+
+.hero__line{
+  color: rgba(10,10,10,0.14);
+  width: 100%;
+  height: 1px;
+  margin-top: clamp(50px, 8vw, 90px);
+}
+
+/* ==========================================================================
+   Buttons
+   ========================================================================== */
+.btn{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  letter-spacing: .04em;
+  padding: 15px 30px;
+  border: 1px solid var(--ink);
+  transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+}
+.btn--solid{
+  background: var(--ink);
+  color: var(--paper);
+}
+.btn--solid:hover{ background: transparent; color: var(--ink); }
+.btn--line{
+  background: transparent;
+  color: var(--ink);
+}
+.btn--line:hover{ background: var(--ink); color: var(--paper); }
+
+/* ==========================================================================
+   About
+   ========================================================================== */
+.about__grid{
+  padding: 0 var(--edge);
+  display: grid;
+  grid-template-columns: 5fr 7fr;
+  gap: clamp(30px, 6vw, 90px);
+}
+.about__lede{
+  font-family: var(--serif);
+  font-size: clamp(26px, 3vw, 36px);
+  line-height: 1.3;
+}
+.about__body{
+  display: grid;
+  gap: 20px;
+  max-width: 52ch;
+  color: var(--ink-soft);
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+/* ==========================================================================
+   Method
+   ========================================================================== */
+.method__list{
+  border-top: var(--rule);
+}
+.method__item{
+  display: grid;
+  grid-template-columns: 90px 220px 1fr;
+  align-items: baseline;
+  gap: 24px;
+  padding: 26px var(--edge);
+  border-bottom: var(--rule);
+  transition: background var(--dur-fast) var(--ease);
+}
+.method__item:hover{ background: var(--paper-dim); }
+.method__index{
+  font-family: var(--serif);
+  font-size: 20px;
+  color: var(--stone-dark);
+}
+.method__name{
+  font-family: var(--serif);
+  font-size: clamp(22px, 2.4vw, 30px);
+}
+.method__desc{
+  color: var(--stone-dark);
+  font-size: 15px;
+  max-width: 46ch;
+}
+
+/* ==========================================================================
+   Work / Projects
+   ========================================================================== */
+.work{ background: var(--ink); color: var(--paper); }
+.work .section-num{ color: var(--stone); }
+.work .section-head h2{ color: var(--paper); }
+
+.project{
+  border-top: var(--rule-light);
+  padding: clamp(30px, 5vw, 54px) var(--edge);
+  display: grid;
+  grid-template-columns: 70px 1fr 1fr 220px;
+  gap: clamp(16px, 3vw, 40px);
+  align-items: center;
+  position: relative;
+  transition: background var(--dur-fast) var(--ease);
+}
+.project:last-of-type{ border-bottom: var(--rule-light); }
+.project:hover{ background: rgba(244,242,237,0.04); }
+.project__num{
+  font-family: var(--serif);
+  font-size: 15px;
+  color: var(--stone);
+}
+.project__category{
+  font-size: 11px;
+  letter-spacing: .1em;
+  color: var(--stone);
+  text-transform: uppercase;
+}
+.project__title{
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(24px, 2.6vw, 34px);
+  margin-top: 6px;
+}
+.project__desc{
+  color: var(--stone);
+  font-size: 14.5px;
+  line-height: 1.6;
+  max-width: 42ch;
+}
+.project__meta{
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--stone);
+}
+.project__link{
+  grid-column: 3 / 4;
+  font-size: 13px;
+  border-bottom: 1px solid var(--champagne);
+  color: var(--champagne);
+  width: fit-content;
+  padding-bottom: 2px;
+}
+.project__mark{
+  grid-column: 4 / 5;
+  color: var(--stone-dark);
+  opacity: .55;
+  transition: opacity var(--dur-fast) var(--ease), transform var(--dur-med) var(--ease);
+}
+.project:hover .project__mark{ opacity: .9; transform: translateX(4px); }
+
+/* ==========================================================================
+   Services
+   ========================================================================== */
+.services__list{
+  border-top: var(--rule);
+}
+.services__item{
+  padding: 26px var(--edge);
+  border-bottom: var(--rule);
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 24px;
+  transition: background var(--dur-fast) var(--ease);
+}
+.services__item:hover{ background: var(--paper-dim); }
+.services__item h3{
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(20px, 2.2vw, 26px);
+}
+.services__item p{
+  color: var(--stone-dark);
+  font-size: 15px;
+  max-width: 52ch;
+  align-self: center;
+}
+
+/* ==========================================================================
+   Public work / GitHub
+   ========================================================================== */
+.public-work{ background: var(--paper-dim); }
+.public-work__grid{
+  padding: 0 var(--edge);
+  display: grid;
+  grid-template-columns: 4fr 8fr;
+  gap: clamp(30px, 6vw, 80px);
+}
+.public-work__lede{
+  font-family: var(--serif);
+  font-size: clamp(22px, 2.6vw, 28px);
+  line-height: 1.35;
+}
+.public-work__repos{
+  display: grid;
+  gap: 0;
+  border-top: var(--rule);
+  margin-bottom: 40px;
+}
+.repo{
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 20px;
+  padding: 20px 0;
+  border-bottom: var(--rule);
+}
+.repo__name{ font-weight: 600; font-size: 14.5px; }
+.repo__desc{ color: var(--stone-dark); font-size: 14.5px; }
+
+/* ==========================================================================
+   Team
+   ========================================================================== */
+.team__grid{
+  padding: 0 var(--edge);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(40px, 6vw, 90px);
+}
+.team__member h3{
+  font-family: var(--serif);
+  font-size: clamp(32px, 4vw, 48px);
+  font-weight: 400;
+}
+.team__role{
+  display: block;
+  font-size: 12px;
+  letter-spacing: .08em;
+  color: var(--stone-dark);
+  text-transform: uppercase;
+  margin: 12px 0 22px;
+}
+.team__member p{
+  color: var(--ink-soft);
+  font-size: 15.5px;
+  line-height: 1.7;
+  max-width: 44ch;
+}
+
+/* ==========================================================================
+   Why HTR Tech
+   ========================================================================== */
+.why__list{ border-top: var(--rule); }
+.why__list li{
+  display: grid;
+  grid-template-columns: 70px 220px 1fr;
+  gap: 24px;
+  align-items: baseline;
+  padding: 22px var(--edge);
+  border-bottom: var(--rule);
+}
+.why__index{ font-family: var(--serif); color: var(--stone-dark); font-size: 16px; }
+.why__name{ font-weight: 600; font-size: 15px; }
+.why__desc{ color: var(--stone-dark); font-size: 14.5px; }
+
+/* ==========================================================================
+   The Code manifesto
+   ========================================================================== */
+.code-manifesto{ background: var(--ink); color: var(--paper); }
+.code-manifesto .section-num{ color: var(--stone); }
+.code-manifesto .section-head h2{ color: var(--paper); }
+.code-manifesto__grid{
+  padding: 0 var(--edge);
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1px;
+  background: rgba(244,242,237,0.14);
+  border: 1px solid rgba(244,242,237,0.14);
+}
+.code-manifesto__item{
+  background: var(--ink);
+  padding: 34px 26px;
+}
+.code-manifesto__item h3{
+  font-family: var(--serif);
+  font-size: 20px;
+  margin-bottom: 14px;
+}
+.code-manifesto__item p{
+  color: var(--stone);
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+
+/* ==========================================================================
+   Person behind the work
+   ========================================================================== */
+.person__grid{
+  padding: 0 var(--edge);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(30px, 6vw, 80px);
+  align-items: start;
+}
+.person__intro h3{
+  font-family: var(--serif);
+  font-size: clamp(30px, 3.6vw, 42px);
+  font-weight: 400;
+}
+.person__roles{
+  display: block;
+  margin-top: 10px;
+  font-size: 13px;
+  color: var(--stone-dark);
+}
+.person__quote{
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(20px, 2.4vw, 27px);
+  line-height: 1.4;
+}
+.person__links{
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 30px;
+  margin-top: 20px;
+  padding-top: 24px;
+  border-top: var(--rule);
+  font-size: 13px;
+}
+.person__links a{ border-bottom: 1px solid var(--ink); padding-bottom: 2px; }
+
+/* ==========================================================================
+   Contact
+   ========================================================================== */
+.contact{ padding-top: clamp(80px, 12vw, 160px); }
+.contact__top{ padding: 0 var(--edge); max-width: 760px; margin-bottom: clamp(50px, 8vw, 90px); }
+.contact__eyebrow{
+  display: block;
+  font-size: 13px;
+  letter-spacing: .06em;
+  color: var(--stone-dark);
+  margin-bottom: 18px;
+}
+.contact__headline{
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(40px, 6vw, 74px);
+  line-height: 1.05;
+}
+.contact__body{
+  margin-top: 22px;
+  color: var(--ink-soft);
+  font-size: 16px;
+  max-width: 48ch;
+}
+
+.contact__grid{
+  padding: 0 var(--edge);
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: clamp(40px, 6vw, 90px);
+  border-top: var(--rule);
+  padding-top: 50px;
+}
+.contact__label{
+  display: block;
+  font-size: 12px;
+  letter-spacing: .08em;
+  color: var(--stone-dark);
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.contact__email{
+  font-family: var(--serif);
+  font-size: clamp(20px, 2vw, 26px);
+  border-bottom: 1px solid var(--ink);
+  padding-bottom: 4px;
+}
+
+.form{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 26px 30px;
+}
+.form__row{ display: flex; flex-direction: column; gap: 8px; }
+.form__row--full{ grid-column: 1 / -1; }
+.form label{
+  font-size: 12px;
+  letter-spacing: .05em;
+  color: var(--stone-dark);
+}
+.form input, .form textarea{
+  border: none;
+  border-bottom: 1px solid rgba(10,10,10,0.28);
+  background: transparent;
+  padding: 10px 2px;
+  font-size: 15px;
+  transition: border-color var(--dur-fast) var(--ease);
+  resize: vertical;
+}
+.form input:focus, .form textarea:focus{
+  border-color: var(--ink);
+  outline: none;
+}
+.form input:invalid:not(:placeholder-shown){ border-color: #9b3b3b; }
+
+.form__footer{
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-top: 10px;
+}
+.form__status{ font-size: 13px; color: var(--stone-dark); }
+.form__status.is-error{ color: #9b3b3b; }
+.form__status.is-success{ color: #3b6b4f; }
+
+.btn[disabled]{ opacity: .55; cursor: default; }
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+.footer{
+  background: var(--ink);
+  color: var(--paper);
+  padding: clamp(50px, 8vw, 90px) var(--edge) 40px;
+}
+.footer__top{
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-bottom: 40px;
+  border-bottom: var(--rule-light);
+}
+.footer__mark{ font-family: var(--serif); font-size: 22px; }
+.footer__tagline{ font-size: 13px; color: var(--stone); }
+
+.footer__grid{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  padding-block: 40px;
+  border-bottom: var(--rule-light);
+}
+.footer__col{ display: flex; flex-direction: column; gap: 8px; font-size: 14px; }
+.footer__label{ font-size: 11px; letter-spacing: .08em; color: var(--stone); text-transform: uppercase; }
+.footer__col a{ color: var(--paper); border-bottom: 1px solid transparent; width: fit-content; transition: border-color var(--dur-fast) var(--ease); }
+.footer__col a:hover{ border-color: var(--paper); }
+
+.footer__bottom{
+  display: flex;
+  justify-content: space-between;
+  padding-top: 26px;
+  font-size: 12px;
+  color: var(--stone);
+}
+
+/* ==========================================================================
+   Scroll reveal
+   ========================================================================== */
+.reveal{
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity .7s var(--ease), transform .7s var(--ease);
+}
+.reveal.is-visible{ opacity: 1; transform: none; }
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+@media (max-width: 1024px){
+  .about__grid,
+  .public-work__grid,
+  .person__grid{ grid-template-columns: 1fr; }
+  .project{ grid-template-columns: 50px 1fr; }
+  .project__meta{ grid-column: 1 / -1; flex-direction: row; gap: 20px; }
+  .project__link{ grid-column: 1 / -1; }
+  .project__mark{ display: none; }
+  .services__item{ grid-template-columns: 1fr; gap: 10px; }
+  .method__item{ grid-template-columns: 50px 1fr; }
+  .method__desc{ grid-column: 1 / -1; max-width: none; }
+  .why__list li{ grid-template-columns: 40px 160px 1fr; }
+  .code-manifesto__grid{ grid-template-columns: repeat(2, 1fr); }
+  .team__grid{ grid-template-columns: 1fr; gap: 50px; }
+  .form{ grid-template-columns: 1fr; }
+  .contact__grid{ grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px){
+  .nav__links{ display: none; }
+  .nav__toggle{ display: flex; }
+  .hero{ padding-top: 100px; }
+  .why__list li{ grid-template-columns: 1fr; gap: 4px; }
+  .repo{ grid-template-columns: 1fr; gap: 6px; }
+  .footer__grid{ grid-template-columns: 1fr; gap: 24px; }
+  .footer__bottom{ flex-direction: column; gap: 10px; }
+}
+
+@media (max-width: 480px){
+  .code-manifesto__grid{ grid-template-columns: 1fr; }
+  .hero__meta-row{ font-size: 12px; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- ============ INTRO SEQUENCE ============ -->
+<div class="intro" id="intro" aria-hidden="true">
+  <div class="intro__rule"></div>
+  <div class="intro__wordmark">
+    <span>HTR</span><span>TECH</span>
+  </div>
+  <div class="intro__tagline">Private Technology &amp; Digital Security Studio</div>
+</div>
+
+<!-- ============ SCROLL PROGRESS ============ -->
+<div class="progress" id="progress"></div>
+
+<!-- ============ NAVIGATION ============ -->
+<header class="nav" id="nav">
+  <div class="nav__inner">
+    <a href="#top" class="nav__mark">HTR TECH</a>
+    <nav class="nav__links" aria-label="Primary">
+      <a href="#work">Work</a>
+      <a href="#services">Services</a>
+      <a href="#method">Method</a>
+      <a href="#about">About</a>
+      <a href="#public-work">GitHub</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <button class="nav__toggle" id="navToggle" aria-expanded="false" aria-controls="mobileMenu" aria-label="Open menu">
+      <span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- ============ MOBILE MENU ============ -->
+<div class="mobile-menu" id="mobileMenu">
+  <nav aria-label="Mobile">
+    <a href="#work">Work</a>
+    <a href="#services">Services</a>
+    <a href="#method">Method</a>
+    <a href="#about">About</a>
+    <a href="#public-work">GitHub</a>
+    <a href="#contact">Contact</a>
+  </nav>
+  <div class="mobile-menu__footer">
+    <span>India / Digital Technology</span>
+  </div>
+</div>
+
+<main id="top">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" id="hero">
+    <div class="hero__grid">
+      <div class="hero__label">Studio No. 001 — Est. India</div>
+      <h1 class="hero__title">
+        <span class="hero__title-line">HTR TECH</span>
+      </h1>
+      <p class="hero__thesis">Build digital.<br>Think secure.</p>
+      <p class="hero__body">Technology, web development and responsible cybersecurity for people and businesses building what comes next.</p>
+      <div class="hero__actions">
+        <a href="#work" class="btn btn--solid">View work</a>
+        <a href="#contact" class="btn btn--line">Start a conversation</a>
+      </div>
+    </div>
+    <div class="hero__meta">
+      <div class="hero__meta-row"><span>Ayaz Ahmad</span><span>Founder</span></div>
+      <div class="hero__meta-row"><span>Nehal Khan</span><span>Co&#8209;founder</span></div>
+      <div class="hero__meta-row"><span>India</span><span>Digital Technology</span></div>
+    </div>
+    <svg class="hero__line" viewBox="0 0 1200 2" preserveAspectRatio="none" aria-hidden="true">
+      <line x1="0" y1="1" x2="1200" y2="1" stroke="currentColor" stroke-width="1"/>
+    </svg>
+  </section>
+
+  <!-- ============ ABOUT ============ -->
+  <section class="about" id="about">
+    <div class="section-head">
+      <span class="section-num">01</span>
+      <h2>About</h2>
+    </div>
+    <div class="about__grid">
+      <p class="about__lede">HTR TECH is a private technology initiative focused on building practical digital solutions across web development, cybersecurity, technical systems and digital presence.</p>
+      <div class="about__body">
+        <p>We believe technology should be useful before it is impressive. The goal is not to create something that merely looks advanced — the goal is to create something that works.</p>
+        <p>Good digital work begins with understanding a real requirement, then building toward it with care. That is the discipline behind everything HTR TECH makes, from a business website to a piece of authorized security research.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ METHOD ============ -->
+  <section class="method" id="method">
+    <div class="section-head">
+      <span class="section-num">02</span>
+      <h2>The HTR Tech Method</h2>
+    </div>
+    <ol class="method__list">
+      <li class="method__item">
+        <span class="method__index">01</span>
+        <span class="method__name">Understand</span>
+        <span class="method__desc">Understand the objective, audience and requirement.</span>
+      </li>
+      <li class="method__item">
+        <span class="method__index">02</span>
+        <span class="method__name">Plan</span>
+        <span class="method__desc">Define the structure, technology and execution path.</span>
+      </li>
+      <li class="method__item">
+        <span class="method__index">03</span>
+        <span class="method__name">Build</span>
+        <span class="method__desc">Develop the actual solution.</span>
+      </li>
+      <li class="method__item">
+        <span class="method__index">04</span>
+        <span class="method__name">Test</span>
+        <span class="method__desc">Review usability, reliability and technical behavior.</span>
+      </li>
+      <li class="method__item">
+        <span class="method__index">05</span>
+        <span class="method__name">Deliver</span>
+        <span class="method__desc">Ship a polished, usable result.</span>
+      </li>
+      <li class="method__item">
+        <span class="method__index">06</span>
+        <span class="method__name">Improve</span>
+        <span class="method__desc">Iterate based on real requirements and feedback.</span>
+      </li>
+    </ol>
+  </section>
+
+  <!-- ============ SELECTED WORK ============ -->
+  <section class="work" id="work">
+    <div class="section-head">
+      <span class="section-num">03</span>
+      <h2>Selected Work</h2>
+    </div>
+
+    <article class="project">
+      <div class="project__num">01</div>
+      <div class="project__category">Web Development</div>
+      <h3 class="project__title">Business Websites</h3>
+      <p class="project__desc">Professional websites developed for businesses and individuals requiring a credible online presence.</p>
+      <div class="project__meta">
+        <span>HTML · CSS · JavaScript</span>
+        <span>Ongoing</span>
+      </div>
+      <div class="project__mark" aria-hidden="true">
+        <svg viewBox="0 0 200 120"><rect x="1" y="1" width="198" height="118" fill="none" stroke="currentColor" stroke-width="1"/><line x1="1" y1="40" x2="199" y2="40" stroke="currentColor" stroke-width="1"/><line x1="60" y1="40" x2="60" y2="119" stroke="currentColor" stroke-width="1"/></svg>
+      </div>
+    </article>
+
+    <article class="project">
+      <div class="project__num">02</div>
+      <div class="project__category">Digital Presence</div>
+      <h3 class="project__title">Personal &amp; Professional Websites</h3>
+      <p class="project__desc">Modern digital identities for individuals, creators and professionals.</p>
+      <div class="project__meta">
+        <span>Design · Development</span>
+        <span>Ongoing</span>
+      </div>
+      <div class="project__mark" aria-hidden="true">
+        <svg viewBox="0 0 200 120"><circle cx="100" cy="60" r="46" fill="none" stroke="currentColor" stroke-width="1"/><line x1="100" y1="14" x2="100" y2="106" stroke="currentColor" stroke-width="1"/></svg>
+      </div>
+    </article>
+
+    <article class="project">
+      <div class="project__num">03</div>
+      <div class="project__category">Technical Project</div>
+      <h3 class="project__title">Ayaz Terminal</h3>
+      <p class="project__desc">A lightweight terminal utility built for Termux and Linux environments.</p>
+      <div class="project__meta">
+        <span>Shell · Linux · Termux</span>
+        <span>Public</span>
+      </div>
+      <a class="project__link" href="https://github.com/soloxayaz" target="_blank" rel="noopener">Explore code ↗</a>
+      <div class="project__mark" aria-hidden="true">
+        <svg viewBox="0 0 200 120"><rect x="1" y="1" width="198" height="118" fill="none" stroke="currentColor" stroke-width="1"/><line x1="1" y1="1" x2="199" y2="119" stroke="currentColor" stroke-width="1"/></svg>
+      </div>
+    </article>
+
+    <article class="project">
+      <div class="project__num">04</div>
+      <div class="project__category">Security Research</div>
+      <h3 class="project__title">Airgorah / Security Research</h3>
+      <p class="project__desc">Security-oriented experimentation and authorized WiFi auditing research, built around the aircrack&#8209;ng ecosystem.</p>
+      <div class="project__meta">
+        <span>Rust · Linux</span>
+        <span>Public</span>
+      </div>
+      <a class="project__link" href="https://github.com/soloxayaz" target="_blank" rel="noopener">View project ↗</a>
+      <div class="project__mark" aria-hidden="true">
+        <svg viewBox="0 0 200 120"><rect x="1" y="1" width="198" height="118" fill="none" stroke="currentColor" stroke-width="1"/><line x1="1" y1="119" x2="199" y2="1" stroke="currentColor" stroke-width="1"/></svg>
+      </div>
+    </article>
+
+    <article class="project">
+      <div class="project__num">05</div>
+      <div class="project__category">Digital Systems</div>
+      <h3 class="project__title">Custom Digital Solutions</h3>
+      <p class="project__desc">Small technical systems, interfaces and tools built around specific requirements.</p>
+      <div class="project__meta">
+        <span>Systems · Tooling</span>
+        <span>Ongoing</span>
+      </div>
+      <div class="project__mark" aria-hidden="true">
+        <svg viewBox="0 0 200 120"><rect x="1" y="1" width="198" height="118" fill="none" stroke="currentColor" stroke-width="1"/><rect x="40" y="30" width="120" height="60" fill="none" stroke="currentColor" stroke-width="1"/></svg>
+      </div>
+    </article>
+
+    <article class="project">
+      <div class="project__num">06</div>
+      <div class="project__category">Experimental</div>
+      <h3 class="project__title">Independent Technology Projects</h3>
+      <p class="project__desc">Experiments involving web technology, automation, cybersecurity, Linux and developer tooling.</p>
+      <div class="project__meta">
+        <span>Research · Prototyping</span>
+        <span>Ongoing</span>
+      </div>
+      <div class="project__mark" aria-hidden="true">
+        <svg viewBox="0 0 200 120"><rect x="1" y="1" width="198" height="118" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="70" cy="60" r="30" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="130" cy="60" r="30" fill="none" stroke="currentColor" stroke-width="1"/></svg>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============ SERVICES ============ -->
+  <section class="services" id="services">
+    <div class="section-head">
+      <span class="section-num">04</span>
+      <h2>Services</h2>
+    </div>
+    <ul class="services__list">
+      <li class="services__item">
+        <h3>Web Development</h3>
+        <p>Custom websites and digital experiences for businesses, creators, professionals and organizations.</p>
+      </li>
+      <li class="services__item">
+        <h3>Digital Presence</h3>
+        <p>Building a coherent and credible online presence.</p>
+      </li>
+      <li class="services__item">
+        <h3>Technical Implementation</h3>
+        <p>Turning requirements and concepts into functional digital systems.</p>
+      </li>
+      <li class="services__item">
+        <h3>Website Support</h3>
+        <p>Maintenance, troubleshooting, improvements and technical assistance.</p>
+      </li>
+      <li class="services__item">
+        <h3>Security Awareness</h3>
+        <p>Responsible guidance around digital privacy, account security and online risk.</p>
+      </li>
+      <li class="services__item">
+        <h3>Digital Branding</h3>
+        <p>Creating consistent digital identities across websites and platforms.</p>
+      </li>
+      <li class="services__item">
+        <h3>Technology Consulting</h3>
+        <p>Practical technical guidance for individuals and small organizations.</p>
+      </li>
+      <li class="services__item">
+        <h3>Cybersecurity Research</h3>
+        <p>Authorized, ethical, defensive and responsible security research and experimentation.</p>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ============ PUBLIC WORK / GITHUB ============ -->
+  <section class="public-work" id="public-work">
+    <div class="section-head">
+      <span class="section-num">05</span>
+      <h2>The Public Work</h2>
+    </div>
+    <div class="public-work__grid">
+      <p class="public-work__lede">Some of the work lives in public. It is where ideas get tested in the open — tools, experiments and research shared under an open&#8209;source license.</p>
+      <div class="public-work__repos">
+        <div class="repo">
+          <span class="repo__name">Ayaz Terminal</span>
+          <span class="repo__desc">A lightweight terminal utility for Termux and Linux.</span>
+        </div>
+        <div class="repo">
+          <span class="repo__name">Airgorah</span>
+          <span class="repo__desc">WiFi security auditing software built around the aircrack&#8209;ng ecosystem.</span>
+        </div>
+        <div class="repo">
+          <span class="repo__name">Cybersecurity Lab</span>
+          <span class="repo__desc">A cybersecurity&#8209;focused personal digital lab.</span>
+        </div>
+        <div class="repo">
+          <span class="repo__name">Open Source / Experimental</span>
+          <span class="repo__desc">Smaller experiments in development, automation and security tooling.</span>
+        </div>
+      </div>
+      <a href="https://github.com/soloxayaz" target="_blank" rel="noopener" class="btn btn--line">Explore GitHub ↗</a>
+    </div>
+  </section>
+
+  <!-- ============ TEAM ============ -->
+  <section class="team" id="team">
+    <div class="section-head">
+      <span class="section-num">06</span>
+      <h2>The People Behind HTR</h2>
+    </div>
+    <div class="team__grid">
+      <div class="team__member">
+        <h3>Ayaz Ahmad</h3>
+        <span class="team__role">Founder / Technical Lead</span>
+        <p>Works across web development, cybersecurity research, technical implementation and digital systems — focused on turning ideas and requirements into functional digital products.</p>
+      </div>
+      <div class="team__member">
+        <h3>Nehal Khan</h3>
+        <span class="team__role">Co&#8209;founder / Operations</span>
+        <p>Works alongside the technical side of HTR TECH, contributing to coordination, planning, operations and the wider direction of the organization.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ WHY HTR TECH ============ -->
+  <section class="why" id="why">
+    <div class="section-head">
+      <span class="section-num">07</span>
+      <h2>Why HTR Tech</h2>
+    </div>
+    <ol class="why__list">
+      <li><span class="why__index">01</span><span class="why__name">Practicality</span><span class="why__desc">Build around real requirements.</span></li>
+      <li><span class="why__index">02</span><span class="why__name">Precision</span><span class="why__desc">Small details matter.</span></li>
+      <li><span class="why__index">03</span><span class="why__name">Security</span><span class="why__desc">Responsible digital practices from the beginning.</span></li>
+      <li><span class="why__index">04</span><span class="why__name">Craft</span><span class="why__desc">Technology and design should work together.</span></li>
+      <li><span class="why__index">05</span><span class="why__name">Evolution</span><span class="why__desc">Every project should leave room for improvement.</span></li>
+    </ol>
+  </section>
+
+  <!-- ============ THE CODE (manifesto) ============ -->
+  <section class="code-manifesto" id="code">
+    <div class="section-head">
+      <span class="section-num">08</span>
+      <h2>The Code</h2>
+    </div>
+    <div class="code-manifesto__grid">
+      <div class="code-manifesto__item"><h3>Privacy</h3><p>Respect digital information and client confidentiality.</p></div>
+      <div class="code-manifesto__item"><h3>Integrity</h3><p>Be transparent about capabilities and limitations.</p></div>
+      <div class="code-manifesto__item"><h3>Security</h3><p>Promote responsible and defensive digital practices.</p></div>
+      <div class="code-manifesto__item"><h3>Craft</h3><p>Treat every project as something worth doing properly.</p></div>
+      <div class="code-manifesto__item"><h3>Continuous learning</h3><p>Technology changes. We change with it.</p></div>
+    </div>
+  </section>
+
+  <!-- ============ PERSON BEHIND THE WORK ============ -->
+  <section class="person" id="person">
+    <div class="section-head">
+      <span class="section-num">09</span>
+      <h2>The Person Behind the Work</h2>
+    </div>
+    <div class="person__grid">
+      <div class="person__intro">
+        <h3>Ayaz Ahmad</h3>
+        <p class="person__roles">Cybersecurity Researcher · Developer · Bug Bounty Learner · Founder, HTR Tech</p>
+      </div>
+      <p class="person__quote">I build, break, study and rebuild digital systems to understand how they work — with a focus on useful software, web technology and responsible security research.</p>
+      <div class="person__links">
+        <a href="https://github.com/soloxayaz" target="_blank" rel="noopener">GitHub ↗</a>
+        <a href="https://instagram.com/unyieldedd.ayaz" target="_blank" rel="noopener">Instagram ↗</a>
+        <a href="mailto:ahmadayaz0704@gmail.com">Email ↗</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CONTACT ============ -->
+  <section class="contact" id="contact">
+    <div class="contact__top">
+      <span class="contact__eyebrow">What do you want to build?</span>
+      <h2 class="contact__headline">Let&rsquo;s build something<br>that works.</h2>
+      <p class="contact__body">Have a website, digital project, technical requirement or idea that needs to become real? Start a conversation.</p>
+    </div>
+
+    <div class="contact__grid">
+      <div class="contact__direct">
+        <span class="contact__label">Direct</span>
+        <a href="mailto:ahmadayaz0704@gmail.com" class="contact__email">ahmadayaz0704@gmail.com</a>
+      </div>
+
+      <form class="form" id="contactForm" action="https://formspree.io/f/xyeyvreg" method="POST" novalidate>
+        <input type="hidden" name="_subject" value="New HTR TECH website enquiry">
+        <div class="form__row">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" autocomplete="name" required>
+        </div>
+        <div class="form__row">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" autocomplete="email" required>
+        </div>
+        <div class="form__row">
+          <label for="company">Company / Project</label>
+          <input type="text" id="company" name="company" autocomplete="organization">
+        </div>
+        <div class="form__row">
+          <label for="need">What do you need?</label>
+          <input type="text" id="need" name="need" required>
+        </div>
+        <div class="form__row">
+          <label for="budget">Budget (optional)</label>
+          <input type="text" id="budget" name="budget">
+        </div>
+        <div class="form__row form__row--full">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" rows="4" required></textarea>
+        </div>
+
+        <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
+
+        <div class="form__footer">
+          <button type="submit" class="btn btn--solid" id="formSubmit">
+            <span class="btn__label">Send message</span>
+          </button>
+          <p class="form__status" id="formStatus" role="status" aria-live="polite"></p>
+        </div>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="footer__top">
+    <span class="footer__mark">HTR TECH</span>
+    <span class="footer__tagline">Build digital. Think secure.</span>
+  </div>
+  <div class="footer__grid">
+    <div class="footer__col">
+      <span class="footer__label">Founder</span>
+      <span>Ayaz Ahmad</span>
+    </div>
+    <div class="footer__col">
+      <span class="footer__label">Co&#8209;founder</span>
+      <span>Nehal Khan</span>
+    </div>
+    <div class="footer__col">
+      <span class="footer__label">Elsewhere</span>
+      <a href="https://github.com/soloxayaz" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://instagram.com/unyieldedd.ayaz" target="_blank" rel="noopener">Instagram</a>
+      <a href="mailto:ahmadayaz0704@gmail.com">Email</a>
+    </div>
+  </div>
+  <div class="footer__bottom">
+    <span>&copy; 2026 HTR Tech</span>
+    <a href="#top">Back to top ↑</a>
+  </div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------------------------------------------------------------
+     Intro sequence
+  --------------------------------------------------------------- */
+  var intro = document.getElementById('intro');
+  document.body.classList.add('intro-active');
+
+  function finishIntro() {
+    document.body.classList.remove('intro-active');
+    intro.classList.add('is-hidden');
+  }
+
+  if (reducedMotion) {
+    finishIntro();
+  } else {
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        intro.classList.add('is-drawn');
+      });
+    });
+    window.setTimeout(finishIntro, 1700);
+  }
+
+  intro.addEventListener('click', finishIntro);
+
+  /* ---------------------------------------------------------------
+     Nav scroll state + progress bar
+  --------------------------------------------------------------- */
+  var nav = document.getElementById('nav');
+  var progress = document.getElementById('progress');
+
+  function onScroll() {
+    var y = window.scrollY || document.documentElement.scrollTop;
+    nav.classList.toggle('is-scrolled', y > 40);
+
+    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    var pct = docHeight > 0 ? (y / docHeight) * 100 : 0;
+    progress.style.width = pct + '%';
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  /* ---------------------------------------------------------------
+     Mobile menu
+  --------------------------------------------------------------- */
+  var navToggle = document.getElementById('navToggle');
+  var mobileMenu = document.getElementById('mobileMenu');
+
+  function closeMenu() {
+    mobileMenu.classList.remove('is-open');
+    navToggle.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  }
+  function openMenu() {
+    mobileMenu.classList.add('is-open');
+    navToggle.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  }
+  navToggle.addEventListener('click', function () {
+    var expanded = navToggle.getAttribute('aria-expanded') === 'true';
+    expanded ? closeMenu() : openMenu();
+  });
+  mobileMenu.querySelectorAll('a').forEach(function (a) {
+    a.addEventListener('click', closeMenu);
+  });
+
+  /* ---------------------------------------------------------------
+     Scroll reveal
+  --------------------------------------------------------------- */
+  var revealTargets = document.querySelectorAll(
+    '.section-head, .about__lede, .about__body, .method__item, .project, ' +
+    '.services__item, .public-work__lede, .repo, .team__member, .why__list li, ' +
+    '.code-manifesto__item, .person__intro, .person__quote, .contact__top, .form'
+  );
+  revealTargets.forEach(function (el) { el.classList.add('reveal'); });
+
+  if ('IntersectionObserver' in window && !reducedMotion) {
+    var io = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            io.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: '0px 0px -60px 0px' }
+    );
+    revealTargets.forEach(function (el) { io.observe(el); });
+  } else {
+    revealTargets.forEach(function (el) { el.classList.add('is-visible'); });
+  }
+
+  /* ---------------------------------------------------------------
+     Contact form (Formspree, AJAX)
+  --------------------------------------------------------------- */
+  var form = document.getElementById('contactForm');
+  var status = document.getElementById('formStatus');
+  var submitBtn = document.getElementById('formSubmit');
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    if (!form.checkValidity()) {
+      status.textContent = 'Please fill in the required fields.';
+      status.className = 'form__status is-error';
+      form.reportValidity();
+      return;
+    }
+
+    submitBtn.setAttribute('disabled', 'true');
+    status.textContent = 'Sending…';
+    status.className = 'form__status';
+
+    var data = new FormData(form);
+
+    fetch(form.action, {
+      method: 'POST',
+      body: data,
+      headers: { Accept: 'application/json' }
+    })
+      .then(function (response) {
+        if (response.ok) {
+          form.reset();
+          status.textContent = 'Message received. We\u2019ll get back to you shortly.';
+          status.className = 'form__status is-success';
+        } else {
+          return response.json().catch(function () { return {}; }).then(function (json) {
+            var message =
+              json && json.errors
+                ? json.errors.map(function (err) { return err.message; }).join(', ')
+                : 'Something went wrong. Please email us directly.';
+            throw new Error(message);
+          });
+        }
+      })
+      .catch(function (err) {
+        status.textContent = err.message || 'Something went wrong. Please email us directly.';
+        status.className = 'form__status is-error';
+      })
+      .finally(function () {
+        submitBtn.removeAttribute('disabled');
+      });
+  });
+})();
+
+</script>
+</body>
+</html>
