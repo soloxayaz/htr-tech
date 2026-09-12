@@ -757,7 +757,188 @@ body.intro-active{ overflow: hidden; height: 100vh; }
 }
 .form__status{ font-size: 13px; color: var(--stone-dark); }
 .form__status.is-error{ color: #9b3b3b; }
+
 .form__status.is-success{ color: #3b6b4f; }
+
+/* ============================================================
+   HTR TECH — PREMIUM ZERO-COST FORM CONFIRMATION
+   ============================================================ */
+.form__confirmation{
+  grid-column: 1 / -1;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(10,10,10,.16);
+  background: rgba(255,255,255,.42);
+  padding: clamp(30px, 5vw, 58px);
+  animation: htrConfirmationIn .65s cubic-bezier(.22,.61,.36,1) both;
+}
+
+.form__confirmation::before{
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--champagne);
+}
+
+.form__confirmation::after{
+  content: 'HTR / RECEIVED';
+  position: absolute;
+  right: 24px;
+  top: 20px;
+  font-family: var(--sans);
+  font-size: 10px;
+  letter-spacing: .16em;
+  color: var(--stone);
+}
+
+.form__confirmation-mark{
+  width: 48px;
+  height: 48px;
+  border: 1px solid var(--ink);
+  display: grid;
+  place-items: center;
+  margin-bottom: 28px;
+  font-family: var(--sans);
+  font-size: 18px;
+  animation: htrCheckIn .55s .15s ease both;
+}
+
+.form__confirmation-kicker{
+  display: block;
+  margin-bottom: 11px;
+  font-family: var(--sans);
+  font-size: 10px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--stone-dark);
+}
+
+.form__confirmation-title{
+  max-width: 760px;
+  font-family: var(--serif);
+  font-size: clamp(32px, 5vw, 58px);
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -.018em;
+}
+
+.form__confirmation-copy{
+  max-width: 670px;
+  margin-top: 20px;
+  color: var(--stone-dark);
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+.form__confirmation-meta{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 0;
+  margin-top: 32px;
+  border-top: 1px solid rgba(10,10,10,.14);
+  border-bottom: 1px solid rgba(10,10,10,.14);
+}
+
+.form__confirmation-item{
+  padding: 17px 0;
+}
+
+.form__confirmation-item + .form__confirmation-item{
+  padding-left: 28px;
+  border-left: 1px solid rgba(10,10,10,.14);
+}
+
+.form__confirmation-label{
+  display: block;
+  margin-bottom: 7px;
+  font-family: var(--sans);
+  font-size: 9px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--stone);
+}
+
+.form__confirmation-value{
+  display: block;
+  font-family: var(--sans);
+  font-size: 13px;
+  letter-spacing: .035em;
+  word-break: break-word;
+}
+
+.form__confirmation-actions{
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-top: 30px;
+}
+
+.form__confirmation-note{
+  font-family: var(--sans);
+  font-size: 11px;
+  line-height: 1.5;
+  letter-spacing: .03em;
+  color: var(--stone);
+}
+
+@keyframes htrConfirmationIn{
+  from{
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to{
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes htrCheckIn{
+  from{
+    opacity: 0;
+    transform: scale(.75) rotate(-8deg);
+  }
+  to{
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+
+@media (max-width: 600px){
+  .form__confirmation{
+    padding: 28px 22px;
+  }
+
+  .form__confirmation::after{
+    right: 18px;
+    top: 18px;
+    font-size: 9px;
+  }
+
+  .form__confirmation-meta{
+    grid-template-columns: 1fr;
+  }
+
+  .form__confirmation-item + .form__confirmation-item{
+    padding-left: 0;
+    border-left: 0;
+    border-top: 1px solid rgba(10,10,10,.14);
+  }
+
+  .form__confirmation-actions{
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+.btn[disabled]{
+  opacity: .55;
+  cursor: default;
+}
+
 
 .btn[disabled]{ opacity: .55; cursor: default; }
 
@@ -1395,54 +1576,217 @@ body.intro-active{ overflow: hidden; height: 100vh; }
   }
 
   /* ---------------------------------------------------------------
-     Contact form (Formspree, AJAX)
+     Contact form — Formspree AJAX
+     Premium confirmation — no paid autoresponder required.
   --------------------------------------------------------------- */
+
   var form = document.getElementById('contactForm');
   var status = document.getElementById('formStatus');
   var submitBtn = document.getElementById('formSubmit');
 
+  function createReference() {
+    var timePart = Date.now().toString(36).toUpperCase().slice(-6);
+    var randomPart = Math.random().toString(36).slice(2, 6).toUpperCase();
+    return 'HTR-' + timePart + '-' + randomPart;
+  }
+
+  function createConfirmation(name, email, reference) {
+
+    var wrapper = document.createElement('div');
+    wrapper.className = 'form__confirmation';
+    wrapper.setAttribute('role', 'status');
+    wrapper.setAttribute('aria-live', 'polite');
+
+    var mark = document.createElement('div');
+    mark.className = 'form__confirmation-mark';
+    mark.setAttribute('aria-hidden', 'true');
+    mark.textContent = '✓';
+
+    var kicker = document.createElement('span');
+    kicker.className = 'form__confirmation-kicker';
+    kicker.textContent = 'Enquiry successfully received';
+
+    var title = document.createElement('h3');
+    title.className = 'form__confirmation-title';
+    title.textContent = 'Your message is now with HTR Tech.';
+
+    var copy = document.createElement('p');
+    copy.className = 'form__confirmation-copy';
+
+    var safeName = String(name || '').trim();
+    var safeEmail = String(email || '').trim();
+
+    if (safeName && safeEmail) {
+      copy.textContent =
+        'Thank you, ' + safeName +
+        '. Your enquiry has been securely received. ' +
+        'Our team will review the details and respond using ' +
+        safeEmail + '.';
+    } else if (safeEmail) {
+      copy.textContent =
+        'Your enquiry has been securely received. ' +
+        'Our team will review the details and respond using ' +
+        safeEmail + '.';
+    } else {
+      copy.textContent =
+        'Your enquiry has been securely received. ' +
+        'Our team will review the details and respond as soon as possible.';
+    }
+
+    var meta = document.createElement('div');
+    meta.className = 'form__confirmation-meta';
+
+    function makeMeta(label, value) {
+      var item = document.createElement('div');
+      item.className = 'form__confirmation-item';
+
+      var labelEl = document.createElement('span');
+      labelEl.className = 'form__confirmation-label';
+      labelEl.textContent = label;
+
+      var valueEl = document.createElement('strong');
+      valueEl.className = 'form__confirmation-value';
+      valueEl.textContent = value;
+
+      item.appendChild(labelEl);
+      item.appendChild(valueEl);
+
+      return item;
+    }
+
+    meta.appendChild(makeMeta('Reference', reference));
+    meta.appendChild(makeMeta('Status', 'Received · Under review'));
+
+    var actions = document.createElement('div');
+    actions.className = 'form__confirmation-actions';
+
+    var another = document.createElement('button');
+    another.type = 'button';
+    another.className = 'btn btn--solid';
+    another.textContent = 'Send another enquiry';
+
+    another.addEventListener('click', function () {
+      wrapper.remove();
+      form.hidden = false;
+      form.reset();
+
+      status.textContent = '';
+      status.className = 'form__status';
+
+      var firstField = document.getElementById('name');
+
+      if (firstField) {
+        firstField.focus();
+      }
+    });
+
+    var note = document.createElement('span');
+    note.className = 'form__confirmation-note';
+    note.textContent =
+      'Please keep your reference for your records.';
+
+    actions.appendChild(another);
+    actions.appendChild(note);
+
+    wrapper.appendChild(mark);
+    wrapper.appendChild(kicker);
+    wrapper.appendChild(title);
+    wrapper.appendChild(copy);
+    wrapper.appendChild(meta);
+    wrapper.appendChild(actions);
+
+    return wrapper;
+  }
+
   form.addEventListener('submit', function (e) {
+
     e.preventDefault();
 
     if (!form.checkValidity()) {
-      status.textContent = 'Please fill in the required fields.';
+      status.textContent =
+        'Please complete the required fields before sending.';
       status.className = 'form__status is-error';
       form.reportValidity();
       return;
     }
 
     submitBtn.setAttribute('disabled', 'true');
-    status.textContent = 'Sending…';
+
+    var buttonLabel = submitBtn.querySelector('.btn__label');
+
+    if (buttonLabel) {
+      buttonLabel.textContent = 'Sending…';
+    }
+
+    status.textContent = 'Transmitting your enquiry…';
     status.className = 'form__status';
 
     var data = new FormData(form);
 
+    var name = data.get('name') || '';
+    var email = data.get('email') || '';
+
     fetch(form.action, {
       method: 'POST',
       body: data,
-      headers: { Accept: 'application/json' }
+      headers: {
+        Accept: 'application/json'
+      }
     })
       .then(function (response) {
-        if (response.ok) {
-          form.reset();
-          status.textContent = 'Message received. We\u2019ll get back to you shortly.';
-          status.className = 'form__status is-success';
-        } else {
-          return response.json().catch(function () { return {}; }).then(function (json) {
-            var message =
-              json && json.errors
-                ? json.errors.map(function (err) { return err.message; }).join(', ')
-                : 'Something went wrong. Please email us directly.';
-            throw new Error(message);
-          });
+
+        if (!response.ok) {
+
+          return response
+            .json()
+            .catch(function () {
+              return {};
+            })
+            .then(function (json) {
+
+              var message =
+                json && json.errors
+                  ? json.errors
+                      .map(function (err) {
+                        return err.message;
+                      })
+                      .join(', ')
+                  : 'Something went wrong. Please email us directly.';
+
+              throw new Error(message);
+            });
         }
+
+        var reference = createReference();
+
+        form.hidden = true;
+
+        form.parentNode.insertBefore(
+          createConfirmation(name, email, reference),
+          form.nextSibling
+        );
+
+        status.textContent = '';
+        status.className = 'form__status';
+
       })
       .catch(function (err) {
-        status.textContent = err.message || 'Something went wrong. Please email us directly.';
+
+        status.textContent =
+          err.message ||
+          'Something went wrong. Please email us directly.';
+
         status.className = 'form__status is-error';
+
       })
       .finally(function () {
+
         submitBtn.removeAttribute('disabled');
+
+        if (buttonLabel) {
+          buttonLabel.textContent = 'Send message';
+        }
+
       });
   });
 })();
